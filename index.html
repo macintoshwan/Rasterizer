@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专业绘图工具</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部工具栏 -->
+        <header class="toolbar">
+            <div class="toolbar-section">
+                <h1>绘图软件</h1>
+            </div>
+            
+            <div class="toolbar-section">
+                <label for="canvas-selector">画板:</label>
+                <select id="canvas-selector">
+                    <option value="default">默认画板</option>
+                </select>
+                <button id="new-canvas-btn">新建画板</button>
+                <button id="save-canvas-btn">保存画板</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- 左侧工具面板 -->
+            <aside class="sidebar">
+                <div class="tool-group">
+                    <h3>工具</h3>
+                    <button class="tool-btn active" data-tool="select">选择</button>
+                    <button class="tool-btn" data-tool="rectangle">长方形</button>
+                    <button class="tool-btn" data-tool="circle">圆形</button>
+                    <button class="tool-btn" data-tool="text">文字</button>
+                </div>
+
+                <!-- 属性面板 -->
+                <div class="property-panel">
+                    <h3 id="property-title">属性</h3>
+                    
+                    <!-- 默认工具属性 -->
+                    <div id="default-properties">
+                        <!-- 选择工具说明 -->
+                        <div id="select-tool-info" class="tool-info">
+                            <p>选择工具：点击元素进行选择和拖拽</p>
+                            <small>提示：选中元素后可以在此编辑其属性</small>
+                        </div>
+
+                        <!-- 图形工具通用属性 -->
+                        <div id="shape-properties" style="display: none;">
+                            <div class="property-group">
+                                <label for="fill-color">填充颜色:</label>
+                                <input type="color" id="fill-color" value="#ff0000">
+                            </div>
+
+                            <div class="property-group">
+                                <label for="stroke-color">边框颜色:</label>
+                                <input type="color" id="stroke-color" value="#000000">
+                            </div>
+
+                            <div class="property-group">
+                                <label for="stroke-width">边框宽度:</label>
+                                <input type="range" id="stroke-width" min="0" max="10" value="1">
+                                <span id="stroke-width-value">1</span>
+                            </div>
+                        </div>
+
+                        <!-- 文字工具专用属性 -->
+                        <div id="text-properties" style="display: none;">
+                            <div class="property-group">
+                                <label for="fill-color-text">文字颜色:</label>
+                                <input type="color" id="fill-color-text" value="#ffffff">
+                            </div>
+
+                        <div class="property-group">
+                            <label for="font-family">字体:</label>
+                            <select id="font-family">
+                                <option value="">正在加载字体...</option>
+                            </select>
+                        </div>                            <div class="property-group">
+                                <label for="font-size">字体大小:</label>
+                                <input type="range" id="font-size" min="12" max="256" value="16">
+                                <span id="font-size-value">16</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 选中元素属性编辑 -->
+                    <div id="selected-properties" style="display: none;">
+                        <div class="element-info">
+                            <p id="element-type">元素类型: 未选择</p>
+                        </div>
+
+                        <!-- 通用属性 -->
+                        <div class="property-group" id="edit-fill-group">
+                            <label for="edit-fill-color">填充颜色:</label>
+                            <input type="color" id="edit-fill-color">
+                        </div>
+
+                        <div class="property-group" id="edit-stroke-group">
+                            <label for="edit-stroke-color">边框颜色:</label>
+                            <input type="color" id="edit-stroke-color">
+                        </div>
+
+                        <div class="property-group" id="edit-stroke-width-group">
+                            <label for="edit-stroke-width">边框宽度:</label>
+                            <input type="range" id="edit-stroke-width" min="0" max="10">
+                            <span id="edit-stroke-width-value">1</span>
+                        </div>
+
+                        <!-- 位置属性 -->
+                        <div class="property-group" id="edit-position-group">
+                            <label>位置:</label>
+                            <div class="position-inputs">
+                                <input type="number" id="edit-x" placeholder="X" min="0" max="640">
+                                <input type="number" id="edit-y" placeholder="Y" min="0" max="320">
+                            </div>
+                        </div>
+
+                        <!-- 尺寸属性 -->
+                        <div class="property-group" id="edit-size-group">
+                            <label>尺寸:</label>
+                            <div class="size-inputs">
+                                <input type="number" id="edit-width" placeholder="宽度" min="1">
+                                <input type="number" id="edit-height" placeholder="高度" min="1">
+                            </div>
+                        </div>
+
+                        <!-- 圆形半径 -->
+                        <div class="property-group" id="edit-radius-group" style="display: none;">
+                            <label for="edit-radius">半径:</label>
+                            <input type="number" id="edit-radius" min="1">
+                        </div>
+
+                        <!-- 文字属性 -->
+                        <div class="property-group" id="edit-text-group" style="display: none;">
+                            <label for="edit-text-content">文字内容:</label>
+                            <textarea id="edit-text-content" rows="3"></textarea>
+                        </div>
+
+                        <div class="property-group" id="edit-font-group" style="display: none;">
+                            <label for="edit-font-family">字体:</label>
+                            <select id="edit-font-family">
+                                <option value="">正在加载字体...</option>
+                            </select>
+                        </div>
+
+                        <div class="property-group" id="edit-font-size-group" style="display: none;">
+                            <label for="edit-font-size">字体大小:</label>
+                            <input type="range" id="edit-font-size" min="12" max="256">
+                            <span id="edit-font-size-value">16</span>
+                        </div>
+
+                        <!-- 操作按钮 -->
+                        <div class="property-actions">
+                            <button id="apply-changes" class="action-btn primary">应用更改</button>
+                            <button id="delete-element" class="action-btn danger">删除元素</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 绘图区域 -->
+            <main class="canvas-container">
+                <div class="drawing-area">
+                    <svg id="drawing-canvas" width="640" height="320" viewBox="0 0 640 320">
+                        <!-- 背景 -->
+                        <rect width="100%" height="100%" fill="#000000"/>
+                    </svg>
+                    
+                    <!-- LED点阵显示区域 -->
+                    <div class="led-display-container">
+                        <div class="led-display-header">
+                            <h4>LED显示预览 (64×32)</h4>
+                            <div class="led-controls">
+                                <label>
+                                    <input type="checkbox" id="led-enabled" checked>
+                                    实时预览
+                                </label>
+                                <button id="refresh-led" class="led-btn">刷新</button>
+                            </div>
+                        </div>
+                        <div class="led-matrix" id="led-matrix">
+                            <!-- LED点将由JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 文字输入对话框 -->
+    <div id="text-dialog" class="dialog hidden">
+        <div class="dialog-content">
+            <h3>输入文字</h3>
+            <textarea id="text-input" placeholder="请输入文字内容..."></textarea>
+            <div class="dialog-buttons">
+                <button id="text-confirm">确定</button>
+                <button id="text-cancel">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

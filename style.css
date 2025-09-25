@@ -1,0 +1,1030 @@
+/* 全局样式 - 高级深色主题 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* 高级深色主题色彩变量 */
+    --primary-bg: #1a1a1a;
+    --secondary-bg: #2d2d2d;
+    --tertiary-bg: #3a3a3a;
+    --surface-bg: #2a2a2a;
+    --accent-color: #6366f1;
+    --accent-hover: #4f46e5;
+    --accent-light: #8b5cf6;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+    --border-color: #404040;
+    --border-light: #525252;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --canvas-bg: #111111;
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-heavy: rgba(0, 0, 0, 0.5);
+    --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --gradient-surface: linear-gradient(145deg, #2d2d2d 0%, #2a2a2a 100%);
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--primary-bg);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+    line-height: 1.6;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: var(--primary-bg);
+}
+
+/* 工具栏样式 - 现代化设计 */
+.toolbar {
+    background: var(--gradient-surface);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 20px var(--shadow-light);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.toolbar-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.toolbar h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.toolbar label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.toolbar select {
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+    min-width: 140px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.toolbar select:hover {
+    border-color: var(--accent-color);
+    background: var(--surface-bg);
+}
+
+.toolbar select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.toolbar button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: var(--gradient-primary);
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+.toolbar button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+.toolbar button:active {
+    transform: translateY(0);
+}
+
+/* 主内容区域 */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    background: var(--primary-bg);
+}
+
+/* 侧边栏样式 - 现代化深色设计 */
+.sidebar {
+    width: 280px;
+    background: var(--gradient-surface);
+    border-right: 1px solid var(--border-color);
+    padding: 24px;
+    overflow-y: auto;
+    box-shadow: 2px 0 20px var(--shadow-light);
+    backdrop-filter: blur(10px);
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: var(--secondary-bg);
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+.tool-group, .property-panel {
+    margin-bottom: 32px;
+}
+
+.tool-group h3, .property-panel h3 {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tool-group h3::before {
+    content: "🛠️";
+    font-size: 18px;
+}
+
+.property-panel h3::before {
+    content: "⚙️";
+    font-size: 18px;
+}
+
+.tool-btn {
+    display: block;
+    width: 100%;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.tool-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.tool-btn:hover {
+    background: var(--surface-bg);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
+}
+
+.tool-btn:hover::before {
+    left: 0;
+    opacity: 0.1;
+}
+
+.tool-btn.active {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
+    transform: translateY(-2px);
+}
+
+.tool-btn.active::before {
+    opacity: 0;
+}
+
+.tool-btn span {
+    position: relative;
+    z-index: 2;
+}
+
+/* 属性面板样式 - 高级深色设计 */
+.property-group {
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+.property-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 工具信息提示样式 */
+.tool-info {
+    background: var(--gradient-surface);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.tool-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+}
+
+.tool-info p {
+    margin: 0 0 12px 0;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.tool-info small {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-style: italic;
+}
+
+.property-group input[type="color"] {
+    width: 100%;
+    height: 48px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    background: var(--tertiary-bg);
+    transition: all 0.2s ease;
+}
+
+.property-group input[type="color"]:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.property-group input[type="range"] {
+    width: calc(100% - 60px);
+    margin-right: 12px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border-color);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.property-group input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.property-group input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.property-group input[type="number"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.property-group input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.property-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.property-group select:hover {
+    border-color: var(--accent-color);
+}
+
+.property-group select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.property-group select option {
+    padding: 8px 12px;
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+    border: none;
+}
+
+.property-group select option:hover {
+    background: var(--surface-bg);
+}
+
+/* 字体预览样式 */
+.font-preview {
+    font-size: 14px;
+    padding: 4px 0;
+}
+
+/* 加载状态样式 */
+.loading-fonts {
+    position: relative;
+}
+
+.loading-fonts::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+.property-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.property-group textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.property-group span {
+    font-weight: 600;
+    color: var(--accent-color);
+    min-width: 40px;
+    display: inline-block;
+    text-align: center;
+    background: var(--secondary-bg);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+/* 元素信息样式 - 高级设计 */
+.element-info {
+    background: var(--gradient-surface);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.element-info::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+}
+
+.element-info p {
+    margin: 0;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+/* 位置和尺寸输入框 */
+.position-inputs,
+.size-inputs {
+    display: flex;
+    gap: 12px;
+}
+
+.position-inputs input,
+.size-inputs input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 操作按钮样式 - 现代化设计 */
+.property-actions {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.action-btn {
+    padding: 14px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+.action-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.action-btn.primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+.action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.action-btn.danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+
+.action-btn.danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+/* 动画效果 */
+#selected-properties {
+    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 自定义滚动条样式 */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-light) var(--secondary-bg);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--secondary-bg);
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+/* 画布容器样式 - 专业级深色设计 */
+.canvas-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #2a2a2a 0%, var(--primary-bg) 70%);
+    padding: 32px;
+    overflow: auto;
+    position: relative;
+}
+
+.canvas-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.drawing-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+}
+
+#drawing-canvas {
+    border: 1px solid var(--border-light);
+    border-radius: 0;
+    background-color: var(--canvas-bg);
+    box-shadow: 
+        0 10px 30px var(--shadow-heavy),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    cursor: crosshair;
+    transition: all 0.3s ease;
+}
+
+#drawing-canvas:hover {
+    box-shadow: 
+        0 15px 40px var(--shadow-heavy),
+        0 0 0 1px var(--accent-color),
+        0 0 20px rgba(99, 102, 241, 0.1);
+}
+
+/* LED显示器样式 */
+.led-display-container {
+    background: var(--gradient-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 25px var(--shadow-light);
+    min-width: fit-content;
+}
+
+.led-display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 20px;
+}
+
+.led-display-header h4 {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.led-display-header h4::before {
+    content: "📟";
+    font-size: 16px;
+}
+
+.led-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.led-controls label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.led-controls input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent-color);
+}
+
+.led-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--tertiary-bg);
+    color: var(--text-secondary);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.led-btn:hover {
+    background: var(--surface-bg);
+    color: var(--text-primary);
+    border-color: var(--accent-color);
+}
+
+/* LED点阵样式 */
+.led-matrix {
+    display: grid;
+    grid-template-columns: repeat(64, 1fr);
+    grid-template-rows: repeat(32, 1fr);
+    gap: 0.5px;
+    background: #0a0a0a;
+    padding: 8px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    width: fit-content;
+    max-width: 100%;
+    aspect-ratio: 2 / 1;
+}
+
+.led-pixel {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+    background: #1a1a1a;
+    transition: all 0.1s ease;
+    border: none;
+    position: relative;
+}
+
+.led-pixel.active {
+    box-shadow: 0 0 3px currentColor;
+}
+
+/* LED像素发光效果 */
+.led-pixel.red { 
+    background: #ff0000 !important; 
+    box-shadow: 0 0 3px rgba(255, 0, 0, 0.8) !important; 
+}
+.led-pixel.green { 
+    background: #00ff00 !important; 
+    box-shadow: 0 0 3px rgba(0, 255, 0, 0.8) !important; 
+}
+.led-pixel.blue { 
+    background: #0000ff !important; 
+    box-shadow: 0 0 3px rgba(0, 0, 255, 0.8) !important; 
+}
+.led-pixel.white { 
+    background: #ffffff !important; 
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.6) !important; 
+}
+.led-pixel.yellow { 
+    background: #ffff00 !important; 
+    box-shadow: 0 0 3px rgba(255, 255, 0, 0.8) !important; 
+}
+.led-pixel.cyan { 
+    background: #00ffff !important; 
+    box-shadow: 0 0 3px rgba(0, 255, 255, 0.8) !important; 
+}
+.led-pixel.magenta { 
+    background: #ff00ff !important; 
+    box-shadow: 0 0 3px rgba(255, 0, 255, 0.8) !important; 
+}
+.led-pixel.orange { 
+    background: #ff8000 !important; 
+    box-shadow: 0 0 3px rgba(255, 128, 0, 0.8) !important; 
+}
+
+/* 元素选择状态样式 */
+.selected {
+    stroke: var(--accent-light) !important;
+    stroke-width: 2 !important;
+    stroke-dasharray: 6,4 !important;
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
+    animation: selectedPulse 2s ease-in-out infinite;
+}
+
+@keyframes selectedPulse {
+    0%, 100% { 
+        stroke-opacity: 1; 
+        filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
+    }
+    50% { 
+        stroke-opacity: 0.7; 
+        filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.8));
+    }
+}
+
+/* 调整手柄样式 */
+.resize-handles {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.resize-handle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color);
+    border: 1px solid #fff;
+    border-radius: 2px;
+    pointer-events: all;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+}
+
+.resize-handle:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(100, 181, 246, 0.8);
+}
+
+/* 不同位置的手柄光标样式 */
+.resize-handle.nw { cursor: nw-resize; }
+.resize-handle.ne { cursor: ne-resize; }
+.resize-handle.sw { cursor: sw-resize; }
+.resize-handle.se { cursor: se-resize; }
+.resize-handle.n { cursor: n-resize; }
+.resize-handle.s { cursor: s-resize; }
+.resize-handle.w { cursor: w-resize; }
+.resize-handle.e { cursor: e-resize; }
+
+/* 文字对话框样式 - 现代化设计 */
+.dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: dialogFadeIn 0.3s ease-out;
+}
+
+@keyframes dialogFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+    }
+}
+
+.dialog.hidden {
+    display: none;
+}
+
+.dialog-content {
+    background: var(--gradient-surface);
+    border: 1px solid var(--border-color);
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: 
+        0 25px 50px var(--shadow-heavy),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    width: 480px;
+    max-width: 90vw;
+    animation: dialogSlideIn 0.3s ease-out;
+    backdrop-filter: blur(10px);
+}
+
+@keyframes dialogSlideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.dialog-content h3 {
+    margin-bottom: 24px;
+    color: var(--text-primary);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.dialog textarea {
+    width: 100%;
+    height: 120px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    resize: vertical;
+    font-size: 14px;
+    margin-bottom: 24px;
+    background: var(--tertiary-bg);
+    color: var(--text-primary);
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.dialog textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.dialog button {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#text-confirm {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+#text-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+#text-cancel {
+    background: var(--tertiary-bg);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+#text-cancel:hover {
+    background: var(--surface-bg);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+}
+
+/* 响应式设计 - 高级适配 */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 260px;
+    }
+    
+    .canvas-container {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 240px;
+        padding: 20px;
+    }
+    
+    .toolbar {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+    }
+    
+    .toolbar-section {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .canvas-container {
+        padding: 16px;
+    }
+    
+    #drawing-canvas {
+        max-width: 90vw;
+        max-height: 60vh;
+        width: auto;
+        height: auto;
+    }
+    
+    .dialog-content {
+        width: 90vw;
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        max-height: 300px;
+        order: 2;
+    }
+    
+    .canvas-container {
+        order: 1;
+        flex: 1;
+    }
+}
