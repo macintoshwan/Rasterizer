@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>字体取模软件</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <header class="app-header">
+            <h1>字体取模软件</h1>
+            <div class="header-actions">
+                <button id="clearCanvasBtn" class="secondary">清空画布</button>
+                <button id="clearSelectionBtn" class="secondary">清空选中</button>
+                <button id="applySelectionBtn" class="primary">填充选中</button>
+                <button id="exportBtn" class="accent">导出字模</button>
+                <button id="saveBoardBtn" class="primary subtle">导出画板</button>
+                <button id="loadBoardBtn" class="secondary">导入画板</button>
+                <div class="board-library">
+                    <label for="boardLibrarySelect">画板库</label>
+                    <select id="boardLibrarySelect" aria-label="画板库">
+                        <option value="" disabled selected>暂无保存的画板</option>
+                    </select>
+                </div>
+                <input type="file" id="boardFileInput" accept="application/json" hidden>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <section class="canvas-panel">
+                <div class="panel-title">
+                    <h2>像素绘制区</h2>
+                    <div class="panel-stats">
+                        <span id="selectionInfo">已选中: 0</span>
+                        <span>|</span>
+                        <span id="drawnCount">已上色: 0</span>
+                    </div>
+                </div>
+                <!-- 包裹像素画布和要素覆盖层 -->
+                <div id="pixelContainer" class="pixel-container" style="position: relative; display: inline-block;">
+                    <div id="pixelGrid" class="pixel-grid" role="grid" aria-label="64×32 像素画布"></div>
+                    <div id="overlayContainer" class="overlay-container" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: auto;">
+                    </div>
+                </div> <!-- pixelContainer 结束 -->
+
+                <!-- 元素预览列表 -->
+                <div id="elementPreviewList" class="element-preview-list"></div>
+            </section>
+
+            <aside class="controls-panel">
+                <section class="control-group">
+                    <h3>颜色选择</h3>
+                    <div class="color-picker">
+                        <input type="color" id="colorPicker" value="#000000" aria-label="颜色选择器">
+                        <div class="color-preview-wrapper">
+                            <div id="colorPreview" class="color-preview" aria-hidden="true"></div>
+                            <span id="colorValue" class="color-value">#000000</span>
+                        </div>
+                    </div>
+                    <div class="rgb-inputs">
+                        <label>R
+                            <input type="number" id="rgbR" min="0" max="255" value="0">
+                        </label>
+                        <label>G
+                            <input type="number" id="rgbG" min="0" max="255" value="0">
+                        </label>
+                        <label>B
+                            <input type="number" id="rgbB" min="0" max="255" value="0">
+                        </label>
+                    </div>
+                    <div class="palette" aria-label="预设颜色调色板">
+                        <button class="palette-color" data-color="#000000" style="--swatch:#000000" title="黑"></button>
+                        <button class="palette-color" data-color="#FFFFFF" style="--swatch:#FFFFFF" title="白"></button>
+                        <button class="palette-color" data-color="#FF0000" style="--swatch:#FF0000" title="红"></button>
+                        <button class="palette-color" data-color="#00FF00" style="--swatch:#00FF00" title="绿"></button>
+                        <button class="palette-color" data-color="#0000FF" style="--swatch:#0000FF" title="蓝"></button>
+                        <button class="palette-color" data-color="#FFFF00" style="--swatch:#FFFF00" title="黄"></button>
+                        <button class="palette-color" data-color="#FF00FF" style="--swatch:#FF00FF" title="紫"></button>
+                        <button class="palette-color" data-color="#00FFFF" style="--swatch:#00FFFF" title="青"></button>
+                        <button class="palette-color" data-color="#FFA500" style="--swatch:#FFA500" title="琥珀"></button>
+                        <button class="palette-color" data-color="#FF7F00" style="--swatch:#FF7F00" title="暖橙"></button>
+                        <button class="palette-color" data-color="#FFD700" style="--swatch:#FFD700" title="金黄"></button>
+                        <button class="palette-color" data-color="#ADFF2F" style="--swatch:#ADFF2F" title="荧光绿"></button>
+                        <button class="palette-color" data-color="#00BFFF" style="--swatch:#00BFFF" title="亮蓝"></button>
+                        <button class="palette-color" data-color="#FF1493" style="--swatch:#FF1493" title="玫红"></button>
+                        <button class="palette-color" data-color="#A020F0" style="--swatch:#A020F0" title="电紫"></button>
+                        <button class="palette-color" data-color="#F5F5DC" style="--swatch:#F5F5DC" title="米白"></button>
+                        <button class="palette-color" data-color="#556B2F" style="--swatch:#556B2F" title="军绿"></button>
+                    </div>
+                </section>
+
+                <!-- 要素添加与管理 -->
+                <section class="control-group" id="elementAddSection">
+                    <h3>要素添加</h3>
+                    <div class="element-add">
+                        <label>
+                            类型
+                            <select id="elementTypeSelect">
+                                <option value="rectangle">矩形</option>
+                                <option value="circle">圆形</option>
+                                <option value="text">文本</option>
+                            </select>
+                        </label>
+                        <div id="elementProps" class="element-props">
+                            <!-- 动态渲染属性输入 -->
+                        </div>
+                        <button id="addElementBtn" class="primary">添加要素</button>
+                    </div>
+                </section>
+                <section class="control-group" id="elementListSection">
+                    <h3>要素列表</h3>
+                    <ul id="elementList" class="element-list"></ul>
+                </section>
+
+                <section class="control-group" id="fontAddSection">
+                    <h3>字模添加</h3>
+                    <textarea id="fontInputArea" rows="4" placeholder="示例：测(0)
+{...第一行数据},
+{...第二行数据},/*&quot;测&quot;,0*/"></textarea>
+                    <button id="addFontBtn" class="primary">添加字模</button>
+                    <!-- 本地字模列表 -->
+                    <div id="fontLibraryList" class="font-library-list"></div>
+                </section>
+
+                <section class="control-group">
+                    <h3>导出设置</h3>
+                    <div class="export-format">
+                        <label>
+                            文件名
+                            <input type="text" id="fileNameInput" placeholder="font64x32">
+                        </label>
+                        <label>
+                            导出格式
+                            <select id="formatSelect">
+                                <option value="plain">纯文本 (RRGGBB)</option>
+                                <option value="c-array">C 数组</option>
+                            </select>
+                        </label>
+                    </div>
+                    <p class="hint">快捷键: Ctrl+S 导出字模 · Delete 清除选中像素 · 导出/导入画板请使用顶部工具栏</p>
+                </section>
+
+                <section class="control-group">
+                    <h3>取模预览</h3>
+                    <textarea id="previewArea" rows="8" readonly></textarea>
+                </section>
+            </aside>
+        </main>
+
+        <footer class="app-footer">
+            <p>操作提示：单击像素进行上色，按住 Ctrl 并点击可多选多个像素后批量填充；使用顶部按钮导出或导入整幅画板，轻松切换不同图案。</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
