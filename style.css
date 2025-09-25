@@ -698,12 +698,37 @@ body {
     color: var(--text-secondary);
     font-size: 12px;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .led-controls input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: var(--accent-color);
+}
+
+.led-controls input[type="range"] {
+    width: 80px;
+    height: 4px;
+    background: var(--bg-tertiary);
+    outline: none;
+    border-radius: 2px;
+    appearance: none;
+}
+
+.led-controls input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.led-controls span {
+    min-width: 35px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-primary);
 }
 
 .led-btn {
@@ -795,6 +820,11 @@ body {
     animation: selectedPulse 2s ease-in-out infinite;
 }
 
+/* 文字元素选中时减弱光晕效果 */
+text.selected {
+    filter: drop-shadow(0 0 3px rgba(139, 92, 246, 0.3)) !important;
+}
+
 @keyframes selectedPulse {
     0%, 100% { 
         stroke-opacity: 1; 
@@ -803,6 +833,22 @@ body {
     50% { 
         stroke-opacity: 0.7; 
         filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.8));
+    }
+}
+
+/* 文字元素的脉冲动画也要单独处理 */
+text.selected {
+    animation: textSelectedPulse 2s ease-in-out infinite !important;
+}
+
+@keyframes textSelectedPulse {
+    0%, 100% { 
+        stroke-opacity: 1; 
+        filter: drop-shadow(0 0 3px rgba(139, 92, 246, 0.3));
+    }
+    50% { 
+        stroke-opacity: 0.7; 
+        filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.5));
     }
 }
 

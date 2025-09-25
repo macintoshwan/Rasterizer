@@ -97,6 +97,10 @@ class DrawingApp {
         this.resizeStartPoint = { x: 0, y: 0 };
         this.originalBounds = { x: 0, y: 0, width: 0, height: 0 };
         
+        // 二值化相关参数
+        this.binarizationLevel = 0; // 0-100, 0为全彩，100为完全二值化
+        this.thresholdLevel = 128;  // 二值化阈值 0-255
+        
         this.init();
     }
 
@@ -1228,6 +1232,23 @@ class DrawingApp {
             this.updateLEDDisplay();
         });
         
+        // 添加二值化控制事件
+        document.getElementById('binarization-level').addEventListener('input', (e) => {
+            this.binarizationLevel = parseInt(e.target.value);
+            document.getElementById('binarization-level-value').textContent = `${this.binarizationLevel}%`;
+            if (this.ledUpdateEnabled) {
+                this.updateLEDDisplay();
+            }
+        });
+        
+        document.getElementById('threshold-level').addEventListener('input', (e) => {
+            this.thresholdLevel = parseInt(e.target.value);
+            document.getElementById('threshold-level-value').textContent = this.thresholdLevel;
+            if (this.ledUpdateEnabled) {
+                this.updateLEDDisplay();
+            }
+        });
+        
         // 初始更新
         this.updateLEDDisplay();
         
@@ -1254,38 +1275,30 @@ class DrawingApp {
 
     async convertSVGToLED(ctx) {
         try {
-            // 获取SVG内容
+            // 创建高分辨率canvas来渲染SVG（保持原始分辨率）
+            const highResCanvas = document.createElement('canvas');
+            const highResCtx = highResCanvas.getContext('2d');
+            highResCanvas.width = 640;  // 与SVG画布相同
+            highResCanvas.height = 320;
+            
+            // 获取SVG内容并转换为图像
             const svgData = new XMLSerializer().serializeToString(this.canvas);
             const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
             const svgUrl = URL.createObjectURL(svgBlob);
             
-            // 创建图像
             const img = new Image();
             img.onload = () => {
-                // 清除画布
-                ctx.fillStyle = '#000000';
-                ctx.fillRect(0, 0, 64, 32);
+                // 将SVG以原始分辨率绘制到高分辨率canvas
+                highResCtx.fillStyle = '#000000';
+                highResCtx.fillRect(0, 0, 640, 320);
+                highResCtx.drawImage(img, 0, 0, 640, 320);
                 
-                // 绘制图像到64x32的canvas上
-                ctx.drawImage(img, 0, 0, 64, 32);
+                // 获取高分辨率图像数据
+                const highResImageData = highResCtx.getImageData(0, 0, 640, 320);
+                const highResData = highResImageData.data;
                 
-                // 获取像素数据
-                const imageData = ctx.getImageData(0, 0, 64, 32);
-                const data = imageData.data;
-                
-                // 更新LED像素
-                for (let row = 0; row < 32; row++) {
-                    for (let col = 0; col < 64; col++) {
-                        const pixelIndex = (row * 64 + col) * 4;
-                        const r = data[pixelIndex];
-                        const g = data[pixelIndex + 1];
-                        const b = data[pixelIndex + 2];
-                        const a = data[pixelIndex + 3];
-                        
-                        const ledPixel = this.ledPixels[row][col];
-                        this.updateLEDPixel(ledPixel, r, g, b, a);
-                    }
-                }
+                // 使用像素采样算法压缩到64x32
+                this.samplePixelsToLED(highResData, 640, 320);
                 
                 URL.revokeObjectURL(svgUrl);
             };
@@ -1304,6 +1317,75 @@ class DrawingApp {
         }
     }
 
+    samplePixelsToLED(imageData, sourceWidth, sourceHeight) {
+        // 计算采样区域大小：每个LED像素对应源图像中的10x10像素区域
+        const sampleWidth = sourceWidth / 64;   // 10像素宽
+        const sampleHeight = sourceHeight / 32; // 10像素高
+        
+        // 遍历每个LED像素位置
+        for (let ledRow = 0; ledRow < 32; ledRow++) {
+            for (let ledCol = 0; ledCol < 64; ledCol++) {
+                // 计算在源图像中的采样区域
+                const startX = Math.floor(ledCol * sampleWidth);
+                const startY = Math.floor(ledRow * sampleHeight);
+                const endX = Math.min(sourceWidth - 1, Math.floor((ledCol + 1) * sampleWidth));
+                const endY = Math.min(sourceHeight - 1, Math.floor((ledRow + 1) * sampleHeight));
+                
+                // 采样该区域的颜色
+                const sampledColor = this.sampleRegionColor(
+                    imageData, sourceWidth, sourceHeight,
+                    startX, startY, endX, endY
+                );
+                
+                // 更新对应的LED像素
+                const ledPixel = this.ledPixels[ledRow][ledCol];
+                this.updateLEDPixel(ledPixel, sampledColor.r, sampledColor.g, sampledColor.b, sampledColor.a);
+            }
+        }
+    }
+
+    sampleRegionColor(imageData, sourceWidth, sourceHeight, startX, startY, endX, endY) {
+        let totalR = 0, totalG = 0, totalB = 0, totalA = 0;
+        let pixelCount = 0;
+        let maxAlpha = 0;
+        
+        // 遍历采样区域内的所有像素
+        for (let y = startY; y < endY; y++) {
+            for (let x = startX; x < endX; x++) {
+                const pixelIndex = (y * sourceWidth + x) * 4;
+                const r = imageData[pixelIndex];
+                const g = imageData[pixelIndex + 1];
+                const b = imageData[pixelIndex + 2];
+                const a = imageData[pixelIndex + 3];
+                
+                // 只计算非透明像素的颜色贡献
+                if (a > 10) {
+                    // 使用alpha加权平均，突出更不透明的像素
+                    const weight = a / 255;
+                    totalR += r * weight;
+                    totalG += g * weight;
+                    totalB += b * weight;
+                    totalA += weight;
+                    maxAlpha = Math.max(maxAlpha, a);
+                    pixelCount++;
+                }
+            }
+        }
+        
+        if (pixelCount === 0 || totalA === 0) {
+            // 该区域完全透明
+            return { r: 0, g: 0, b: 0, a: 0 };
+        }
+        
+        // 计算加权平均颜色
+        return {
+            r: Math.round(totalR / totalA),
+            g: Math.round(totalG / totalA), 
+            b: Math.round(totalB / totalA),
+            a: maxAlpha // 使用该区域的最大透明度
+        };
+    }
+
     updateLEDPixel(ledPixel, r, g, b, a) {
         // 清除之前的类
         ledPixel.classList.remove('active', 'red', 'green', 'blue', 'white', 'yellow', 'cyan', 'magenta', 'orange');
@@ -1314,17 +1396,98 @@ class DrawingApp {
             return;
         }
         
+        // 根据二值化程度处理颜色
+        const processedColor = this.applyBinarization(r, g, b);
+        
+        // 如果处理后的颜色为黑色，不点亮LED
+        if (!processedColor.isLit) {
+            ledPixel.style.background = '#1a1a1a';
+            return;
+        }
+        
         // 激活LED像素
         ledPixel.classList.add('active');
         
-        // 根据颜色分类显示
-        const colorClass = this.getColorClass(r, g, b);
-        if (colorClass) {
-            ledPixel.classList.add(colorClass);
+        // 使用处理后的颜色
+        if (processedColor.colorClass) {
+            ledPixel.classList.add(processedColor.colorClass);
         } else {
-            // 使用实际颜色
-            ledPixel.style.background = `rgb(${r}, ${g}, ${b})`;
-            ledPixel.style.color = `rgb(${r}, ${g}, ${b})`;
+            ledPixel.style.background = `rgb(${processedColor.r}, ${processedColor.g}, ${processedColor.b})`;
+        }
+    }
+
+    applyBinarization(r, g, b) {
+        // 计算灰度值
+        const grayscale = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+        
+        // 二值化程度 0-100
+        const binaryFactor = this.binarizationLevel / 100;
+        
+        if (binaryFactor === 0) {
+            // 完全全彩模式
+            const colorClass = this.getColorClass(r, g, b);
+            return {
+                isLit: true,
+                r: r,
+                g: g,
+                b: b,
+                colorClass: colorClass
+            };
+        } else if (binaryFactor === 1) {
+            // 完全二值化模式
+            const isLit = grayscale >= this.thresholdLevel;
+            return {
+                isLit: isLit,
+                r: isLit ? 255 : 0,
+                g: isLit ? 255 : 0,
+                b: isLit ? 255 : 0,
+                colorClass: isLit ? 'white' : null
+            };
+        } else {
+            // 混合模式：在全彩和二值化之间插值
+            const isLitBinary = grayscale >= this.thresholdLevel;
+            
+            if (isLitBinary) {
+                // 亮像素：在原色和白色之间插值
+                const mixedR = Math.round(r * (1 - binaryFactor) + 255 * binaryFactor);
+                const mixedG = Math.round(g * (1 - binaryFactor) + 255 * binaryFactor);
+                const mixedB = Math.round(b * (1 - binaryFactor) + 255 * binaryFactor);
+                
+                const colorClass = this.getColorClass(mixedR, mixedG, mixedB);
+                return {
+                    isLit: true,
+                    r: mixedR,
+                    g: mixedG,
+                    b: mixedB,
+                    colorClass: colorClass
+                };
+            } else {
+                // 暗像素：使用更平滑的过渡算法
+                // 基于灰度值与阈值的距离来决定显示强度
+                const distance = this.thresholdLevel - grayscale;
+                const maxDistance = this.thresholdLevel;
+                const dimFactor = Math.max(0, (1 - binaryFactor) * (1 - distance / maxDistance) * 0.5);
+                
+                if (dimFactor > 0.05) {
+                    // 显示暗化的原色
+                    return {
+                        isLit: true,
+                        r: Math.round(r * dimFactor),
+                        g: Math.round(g * dimFactor),
+                        b: Math.round(b * dimFactor),
+                        colorClass: null
+                    };
+                } else {
+                    // 完全关闭
+                    return {
+                        isLit: false,
+                        r: 0,
+                        g: 0,
+                        b: 0,
+                        colorClass: null
+                    };
+                }
+            }
         }
     }
 
