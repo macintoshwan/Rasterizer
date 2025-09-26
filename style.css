@@ -820,11 +820,6 @@ body {
     animation: selectedPulse 2s ease-in-out infinite;
 }
 
-/* 文字元素选中时减弱光晕效果 */
-text.selected {
-    filter: drop-shadow(0 0 3px rgba(139, 92, 246, 0.3)) !important;
-}
-
 @keyframes selectedPulse {
     0%, 100% { 
         stroke-opacity: 1; 
@@ -833,22 +828,6 @@ text.selected {
     50% { 
         stroke-opacity: 0.7; 
         filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.8));
-    }
-}
-
-/* 文字元素的脉冲动画也要单独处理 */
-text.selected {
-    animation: textSelectedPulse 2s ease-in-out infinite !important;
-}
-
-@keyframes textSelectedPulse {
-    0%, 100% { 
-        stroke-opacity: 1; 
-        filter: drop-shadow(0 0 3px rgba(139, 92, 246, 0.3));
-    }
-    50% { 
-        stroke-opacity: 0.7; 
-        filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.5));
     }
 }
 
