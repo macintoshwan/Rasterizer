@@ -200,18 +200,24 @@ class Trainer:
         else:
             raise NotImplementedError("Model does not have a save() method")
     
-    def load_model(self, filepath: str):
+    def set_model(self, model: Any):
         """
-        Load a trained model from disk.
+        Set a pre-trained or loaded model.
+        
+        Use this method to set a model that you've loaded using your
+        framework's loading method (e.g., keras.models.load_model(),
+        torch.load(), pickle.load(), etc.)
         
         Args:
-            filepath: Path to the saved model
+            model: A model object with predict() method
+            
+        Example:
+            >>> import tensorflow as tf
+            >>> loaded_model = tf.keras.models.load_model('my_model.h5')
+            >>> trainer.set_model(loaded_model)
+            >>> predictions = trainer.predict(data)
         """
-        # This is framework-specific, user should load their own model
-        raise NotImplementedError(
-            "Please load your model using your framework's load method "
-            "and set it with: trainer.model = loaded_model"
-        )
+        self.model = model
     
     def get_training_history(self) -> List[Dict[str, Any]]:
         """

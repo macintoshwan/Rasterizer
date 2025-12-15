@@ -96,6 +96,32 @@ class TestRasterizer:
         result = rasterizer.batch_rasterize([])
         
         assert result.shape == (0, 100, 100)
+    
+    def test_rasterize_points_same_coordinate(self):
+        """Test rasterize_points when all points have same coordinate."""
+        rasterizer = Rasterizer(width=100, height=100)
+        
+        # All points have same x coordinate
+        points = np.array([[50, 10], [50, 20], [50, 30]])
+        result = rasterizer.rasterize_points(points, radius=2.0)
+        assert result.shape == (100, 100)
+        assert np.sum(result > 0) > 0  # Should still draw something
+        
+        # All points are identical
+        points_identical = np.array([[25, 25], [25, 25], [25, 25]])
+        result2 = rasterizer.rasterize_points(points_identical, radius=3.0)
+        assert result2.shape == (100, 100)
+        assert np.sum(result2 > 0) > 0  # Should draw at center
+    
+    def test_rasterize_polygon_degenerate(self):
+        """Test rasterize_polygon with degenerate cases."""
+        rasterizer = Rasterizer(width=100, height=100)
+        
+        # All vertices have same x coordinate (vertical line)
+        vertices = np.array([[50, 10], [50, 50], [50, 90]])
+        result = rasterizer.rasterize_polygon(vertices)
+        assert result.shape == (100, 100)
+        # May or may not fill depending on algorithm, but shouldn't crash
 
 
 if __name__ == "__main__":

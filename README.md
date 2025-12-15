@@ -142,6 +142,11 @@ Trainer(width=256, height=256, resolution=1.0)
 
 - `predict(data, normalize=True)` - 预测新数据
 
+- `set_model(model)` - 设置预训练或加载的模型
+  - 用于设置从文件加载的模型
+  
+- `save_model(filepath)` - 保存训练好的模型
+
 ## 数据格式 (Data Format)
 
 支持的数据类型：

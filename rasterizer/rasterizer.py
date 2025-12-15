@@ -49,8 +49,19 @@ class Rasterizer:
         points_normalized = points.copy()
         if len(points) > 0:
             # Scale to image size
-            points_normalized[:, 0] = (points[:, 0] - points[:, 0].min()) / (points[:, 0].max() - points[:, 0].min() + 1e-8) * (self.width - 1)
-            points_normalized[:, 1] = (points[:, 1] - points[:, 1].min()) / (points[:, 1].max() - points[:, 1].min() + 1e-8) * (self.height - 1)
+            x_min, x_max = points[:, 0].min(), points[:, 0].max()
+            y_min, y_max = points[:, 1].min(), points[:, 1].max()
+            
+            # Handle case where all points have same coordinate
+            if x_max - x_min > 1e-8:
+                points_normalized[:, 0] = (points[:, 0] - x_min) / (x_max - x_min) * (self.width - 1)
+            else:
+                points_normalized[:, 0] = self.width // 2
+            
+            if y_max - y_min > 1e-8:
+                points_normalized[:, 1] = (points[:, 1] - y_min) / (y_max - y_min) * (self.height - 1)
+            else:
+                points_normalized[:, 1] = self.height // 2
         
         # Draw points
         for x, y in points_normalized:
@@ -127,8 +138,19 @@ class Rasterizer:
         
         # Normalize vertices to image dimensions
         vertices_normalized = vertices.copy()
-        vertices_normalized[:, 0] = (vertices[:, 0] - vertices[:, 0].min()) / (vertices[:, 0].max() - vertices[:, 0].min() + 1e-8) * (self.width - 1)
-        vertices_normalized[:, 1] = (vertices[:, 1] - vertices[:, 1].min()) / (vertices[:, 1].max() - vertices[:, 1].min() + 1e-8) * (self.height - 1)
+        x_min, x_max = vertices[:, 0].min(), vertices[:, 0].max()
+        y_min, y_max = vertices[:, 1].min(), vertices[:, 1].max()
+        
+        # Handle case where all vertices have same coordinate
+        if x_max - x_min > 1e-8:
+            vertices_normalized[:, 0] = (vertices[:, 0] - x_min) / (x_max - x_min) * (self.width - 1)
+        else:
+            vertices_normalized[:, 0] = self.width // 2
+        
+        if y_max - y_min > 1e-8:
+            vertices_normalized[:, 1] = (vertices[:, 1] - y_min) / (y_max - y_min) * (self.height - 1)
+        else:
+            vertices_normalized[:, 1] = self.height // 2
         
         # Simple scanline fill algorithm
         for y in range(self.height):
