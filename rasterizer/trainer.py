@@ -60,8 +60,12 @@ class Trainer:
         if normalize:
             X = X.astype(np.float32)
             X_min, X_max = X.min(), X.max()
-            if X_max > X_min:
+            # Only normalize if there's a range; otherwise values are already uniform
+            if X_max > X_min and (X_max != 0 or X_min != 0):
                 X = (X - X_min) / (X_max - X_min)
+            elif X_max == X_min and X_max != 0:
+                # All values are the same non-zero value, normalize to 1
+                X = np.ones_like(X)
         
         # Add channel dimension if needed (for CNN compatibility)
         if len(X.shape) == 3:
@@ -120,10 +124,23 @@ class Trainer:
         )
         
         # Store training history
+        # Keras/TensorFlow models return a History object with .history attribute
+        # scikit-learn models return the model itself
+        # Handle both cases gracefully
+        if hasattr(history, 'history'):
+            # Keras/TensorFlow format
+            history_data = history.history
+        elif hasattr(history, '__dict__'):
+            # Try to extract as dictionary
+            history_data = history.__dict__
+        else:
+            # Fallback: store the history object as-is
+            history_data = history
+            
         training_result = {
             'status': 'training_complete',
             'epochs': epochs,
-            'history': history.history if hasattr(history, 'history') else history
+            'history': history_data
         }
         self.training_history.append(training_result)
         

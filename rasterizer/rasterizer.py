@@ -5,6 +5,9 @@ Core Rasterizer class for converting vector data to raster format.
 import numpy as np
 from typing import Tuple, Optional, Union, List
 
+# Epsilon value for floating-point comparisons
+EPSILON = 1e-8
+
 
 class Rasterizer:
     """
@@ -53,12 +56,12 @@ class Rasterizer:
             y_min, y_max = points[:, 1].min(), points[:, 1].max()
             
             # Handle case where all points have same coordinate
-            if x_max - x_min > 1e-8:
+            if x_max - x_min > EPSILON:
                 points_normalized[:, 0] = (points[:, 0] - x_min) / (x_max - x_min) * (self.width - 1)
             else:
                 points_normalized[:, 0] = self.width // 2
             
-            if y_max - y_min > 1e-8:
+            if y_max - y_min > EPSILON:
                 points_normalized[:, 1] = (points[:, 1] - y_min) / (y_max - y_min) * (self.height - 1)
             else:
                 points_normalized[:, 1] = self.height // 2
@@ -142,12 +145,12 @@ class Rasterizer:
         y_min, y_max = vertices[:, 1].min(), vertices[:, 1].max()
         
         # Handle case where all vertices have same coordinate
-        if x_max - x_min > 1e-8:
+        if x_max - x_min > EPSILON:
             vertices_normalized[:, 0] = (vertices[:, 0] - x_min) / (x_max - x_min) * (self.width - 1)
         else:
             vertices_normalized[:, 0] = self.width // 2
         
-        if y_max - y_min > 1e-8:
+        if y_max - y_min > EPSILON:
             vertices_normalized[:, 1] = (vertices[:, 1] - y_min) / (y_max - y_min) * (self.height - 1)
         else:
             vertices_normalized[:, 1] = self.height // 2
